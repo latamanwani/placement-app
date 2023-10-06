@@ -19,7 +19,6 @@ module.exports.interview_detail = async function(req, res){
         student_detail:students,
         interview_student : company.students,
         title:companytitle
-  
     }
     );
 }
