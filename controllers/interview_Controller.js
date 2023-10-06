@@ -5,21 +5,13 @@ const User = require('../models/user');
 const ans = 1;
 
 module.exports.interview = async function (req, res) {
-
-    if (req.cookies.user_id) {
-        User.findById(req.cookies.user_id).
-            then(async function (user) {
-                let students = await Student.find({})
-                let interviews = await Interview.find({})
-
-                return res.render('interview', {
-                    students: students,
-                    interviews: interviews,
-                    title: 'Interviews'
-                });
-            })
-    } else {
-        res.redirect('/users/sign-in');
+    try {
+        let students = await Student.find({})
+        let interviews = await Interview.find({})
+        return res.send({ students: students, interviews: interviews, success: true });
+    } catch (error) {
+        console.error(error);
+        return res.send({ success: false });
     }
 }
 
@@ -39,8 +31,8 @@ module.exports.create = async (req, res) => {
     }
 
     return res.status(201).json({
-        company_name,
-        date,
+        company_name: req.body.company_name,
+        date: req.body.date,
     });
 }
 
