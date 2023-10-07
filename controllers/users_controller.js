@@ -26,16 +26,16 @@ module.exports.create = async function (req,res){
            User.create(req.body)
            .catch(function(err){
             console.log("error in finding a user",err);
-            return res.redirect('/users/sign-in');
+            return res.send('/users/sign-in');
            })
         }
         else{
             console.log("already user is present ")
             alert("already user is present")
-            return res.redirect('back');
+            return res.send('back');
 
         }
-        return res.redirect('/users/sign-in');
+        return res.send('/users/sign-in');
     });
   
 
@@ -51,15 +51,15 @@ module.exports.createSession = async function(req,res){
             if(user){
                 if(user.password != req.body.password){
                     console.log("password did not match");
-                    return res.redirect('back');
+                    return res.send('back');
                 }
                 res.cookie('user_id',user.id);
                 console.log("user logged in and cookies are");
                 console.log(res.cookie);
-                return res.redirect('/');
+                return res.send('/');
             }
             else{
-                res.redirect('back');
+                res.send('back');
             }
         }
     ).catch(function(err){
