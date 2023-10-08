@@ -1,8 +1,5 @@
 const Interview = require('../models/interview');
-const path = require('path');
 const Student = require('../models/student');
-const User = require('../models/user');
-const ans = 1;
 
 module.exports.interview = async function (req, res) {
     try {
@@ -29,11 +26,6 @@ module.exports.create = async (req, res) => {
         console.log(err);
         return res.status(500).json({ response: err });
     }
-
-    return res.status(201).json({
-        company_name: req.body.company_name,
-        date: req.body.date,
-    });
 }
 
 
