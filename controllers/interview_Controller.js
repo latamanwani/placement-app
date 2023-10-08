@@ -39,34 +39,48 @@ module.exports.create = async (req, res) => {
 
 module.exports.addStudent = async function (req, res) {
     console.log("inside Add Student Controller")
-    console.log("Student id is==", req.body.studentList);
-    console.log("company id is==", req.query.compname);
+    console.log("Student id is==", req.body.studentId);
+    console.log("company id is==", req.body.interviewId);
 
-    let interview = await Interview.findById(req.query.compname);
-    let student = await Student.findById(req.body.studentList);
-    console.log(interview._id);
+    const { id } = req.params;
+    console.log(id)
+    try {
+        let interview = await Interview.findOne({ _id: req.body.interviewId });
+        let student = await Student.findOne({ _id: req.body.studentId });
+        console.log(interview._id);
 
-    console.log(interview.students.length);
-    console.log(interview.students.indexOf(student._id));
+        console.log(interview.students.length);
+        console.log(interview.students.indexOf(student._id));
 
-    if (interview.students.includes(student._id)) {
-        console.log("Student Alrady Exists in interview");
+        if (interview.students.includes(student._id)) {
+            console.log("Student Alrady Exists in interview");
+            return res.send({
+                success: false,
+                message: "Student Alrady Exists in interview"
+            });
+        } else {
+            interview.students.push(student);
+            interview.save();
+        }
 
-        return res.redirect('back');
-    } else {
-        interview.students.push(student);
-        interview.save();
+        let studentUpdate = await Student.findOne({ _id: req.body.studentId });
+        let company_name = interview.company_name;
+        console.log("student is added to company", company_name);
+        studentUpdate.companies.push(company_name);
+        studentUpdate.interviews.push(req.body.interviewId);
+
+        studentUpdate.save();
+        return res.send({
+            company_name: interview.company_name,
+            company_id: interview._id,
+            student_detail: studentUpdate,
+            interview: interview,
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.send({ success: false });
     }
-
-    let studentUpdate = await Student.findById(req.body.studentList);
-    let company_name = interview.company_name;
-    console.log("student is added to company", company_name);
-    studentUpdate.companies.push(company_name);
-    studentUpdate.interviews.push(req.query.compname);
-
-    studentUpdate.save();
-
-    res.redirect('back');
 }
 
 
